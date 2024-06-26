@@ -3,31 +3,41 @@ using namespace std;
 typedef long long ll;
 const int maxN = 100;
 const int maxX = 1e6;
-const ll MOD = 1e9+7;
+const ll MOD = 1e9 + 7;
 
-int N, X, c[maxN];
-ll dp[maxX+1];
 int main()
 {
-     scanf("%d %d", &N, &X);
-    for(int i = 0; i < N; i++)
-        scanf("%d", &c[i]);
-    // dp[i] == number of ways to make sum == i
-    dp[maxX+1] = {0};
-    dp[0] = 1;
-    for(int i = 0; i <X;i++)
+    int n, x;
+    cin >> n >> x;
+    vector<int> a(n);
+    for (int i = 0; i < n; i++)
     {
-        if(dp[i]!=0)
-        {
-            for(int j  = 0; j < N; j++)
+        cin >> a[i];
+    }
+
+    vector<int> dp(x + 1, 0);
+    // initializing the dp values with a very high value initially
+    // dp[i] = min coins to generate a sum of i
+
+    // base case
+    dp[0] = 1;
+
+    // dp[x] -> dp[x - ci]
+
+    for (int i = 1; i <= x; i++)
+    { // O(x)
+        // find dp[x]
+        for (int j = 0; j < n; j++)
+        { // O(n)
+            if (a[j] <= i)
             {
-                if( i +c[j] <= X)
-                {
-                    dp[i+c[j]] = (dp[i+c[j]]+ dp[i]) % MOD;
-                }
+                // transition
+                dp[i] = (dp[i] + dp[i - a[j]]) % MOD;
             }
         }
     }
-    cout<<dp[X];
+
+    // final subproblem
+    cout << dp[x] << endl;
     return 0;
 }
