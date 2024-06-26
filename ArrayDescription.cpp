@@ -3,58 +3,66 @@ using namespace std;
 using ll = long long;
 const ll MOD = 1e9 + 7;
 //? any 2 adjacent element should have diff b/w <=1
+
+bool valid(int x, int m)
+{
+    return x >= 1 && x <= m;
+}
+
 int main()
 {
-
-    ll n, m;
+    int n, m;
     cin >> n >> m;
-    vector<ll> arr(n, 0);
-    for (ll i = 0; i < n; i++)
+    vector<int> a(n);
+    for (int i = 0; i < n; i++)
     {
-        cin >> arr[i];
+        cin >> a[i];
     }
-
-    vector<vector<ll>> dp(n, vector<ll>(m + 1, 0));
+    vector<vector<int>> dp(n + 1, vector<int>(m + 1));
+    // dp[i][k] = number of ways to build a prefix of size i
+    // such that the last element of the prefix is k
     //! dp[i][x] - > the no. of elememts  to fill prefix, till index i, such that ith elemt is inserted is x
     //! prefix of size i, and at i-1 , value is x
-    // base cases
 
-    for (int x = 0; x <= m; x++)
+    // base case dp[1][k] = 1 if (a[0] = 0 OR a[0] = k)
+    for (int i = 1; i <= m; i++)
     {
-        if (arr[0] == 0)
-        {
-            // we can fill any number no issues
-            dp[0][x] = 1;
-        }
-        else if (arr[0] == x)
-        {
-            dp[0][x] = 1;
-        }
+
+        // agla valvue 0 nahi hai, aur jo chahiiw, wo bh mahi hai  matlab ki 0
+        if (a[0] == i || a[0] == 0)
+            dp[1][i] = 1;
     }
 
-    for (int i = 1; i < n; i++)
+    for (int i = 2; i <= n; i++)
     {
-        for (int x = 0; x <= m; x++)
+        for (int k = 1; k <= m; k++)
         {
-            if (arr[i] != 0 && arr[i] != x)
+            // finding dp[i][k] here
+            if (a[i - 1] != 0 && a[i - 1] != k)
             {
-                dp[i][x] = 0;
+                dp[i][k] = 0;
+                continue;
             }
-            else
+
+            for (int prev = k - 1; prev <= k + 1; prev++)
             {
-                dp[i][x] = dp[i - 1][x];
-                if (x > 1)
-                    dp[i][x] = (dp[i][x] + dp[i - 1][x - 1]) % MOD;
-                if (x < m)
-                    dp[i][x] = (dp[i][x] + dp[i - 1][x + 1]) % MOD; // means 3 ways, as x-1,x,x+1 are 3 possible values
+                if (!valid(prev, m))
+                {
+                    continue;
+                }
+                // transition
+                dp[i][k] = (dp[i][k] + dp[i - 1][prev]) % MOD;
             }
         }
     }
-    ll result = 0;
-    for (int x = 1; x <= m; x++)
+
+    int ans = 0;
+    for (int i = 1; i <= m; i++)
     {
-        result = (result + dp[n - 1][x]) % MOD;
+        ans = (ans + dp[n][i]) % MOD;
     }
-    cout << result;
-    return 0;
+
+    // final subproblem
+    cout << ans << endl;
 }
+// final answer is summation of all dp(n,i)
