@@ -16,7 +16,7 @@ int main()
 
     vector<vector<ll>> dp(n, vector<ll>(m + 1, 0));
     //! dp[i][x] - > the no. of elememts  to fill prefix, till index i, such that ith elemt is inserted is x
-
+    //! prefix of size i, and at i-1 , value is x
     // base cases
 
     for (int x = 0; x <= m; x++)
