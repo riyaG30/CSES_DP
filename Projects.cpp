@@ -45,7 +45,7 @@ int main()
     {
         ll op1 = dp[i - 1];
         ll op2 = arr[i].profit;
-        int index = bin_search(arr[i].start, 0, i - 1, arr);
+        int index = bin_search(arr[i].start, 0, i - 1, arr); //! it is lower bound
         if (index != -1)
         {
             op2 += dp[index];
